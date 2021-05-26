@@ -1,0 +1,17 @@
+import org.zenframework.z8.base.table.Table;
+[generatable]
+[name "RequestsTopics"]
+public class RequestTopic extends Table {
+	[displayName "Тема заявки"] name;
+records {
+
+		[name "Ошибка в программе"]
+		Error = '05C5DACE-BB7F-481D-9127-51316783DE36';
+
+		[name "Программа не работает"]
+		NotWorking = 'DA3C55AC-8A17-4BAC-BE4D-AC8243768234';
+
+		[name "Вопрос по программе"]
+		Question = '812C9640-B79F-4108-B852-3431C7C35E18';
+	}
+}

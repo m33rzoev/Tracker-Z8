@@ -1,0 +1,24 @@
+import org.zenframework.z8.base.table.Table;
+
+[generatable]
+[name "Status tracker"]
+public class StatusTracker extends Table {
+	[displayName "Статус"] name;
+records {
+
+		[name "Новая заявка"]
+		New = '7AAA86DD-9646-4B46-97CE-D0324720EDCC';
+
+		[name "Заявка в обработке"]
+		InWorking = '1B367FEC-F42F-4987-ADC5-ED796395F1FD';
+
+		[name "Заявка принята"]
+		InProcessing = '388DB852-574C-40C3-A3A7-EF6A5853C736';
+		
+		[name "Заявка выполнена"]
+		Ready = '2A59A9F5-8C89-419F-80E9-BCE1200C57D8';
+		
+		[name "Заявка закрыта"]
+		Done = 'A5F6D768-9D10-4C9B-8249-63333633358B';
+	}
+}

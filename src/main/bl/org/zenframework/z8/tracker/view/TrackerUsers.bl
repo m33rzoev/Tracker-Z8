@@ -1,0 +1,21 @@
+import org.zenframework.z8.base.table.Sql;
+import org.zenframework.z8.base.table.system.Users;
+import org.zenframework.z8.tracker.model.StatusTracker;
+
+[entry]
+[displayName "Заявки для исполнителей"]
+public class TrackerUsers extends TrackerAdminView {
+
+	completionDate.editable = false;
+
+	names = { client, requestTopic.name, createdAt };
+	controls = { client, requestTopic.name, phone, status.name, createdAt, dateOfAcceptance, completionDate, message };
+	columns = { client, requestTopic.name, phone, status.name, createdAt, dateOfAcceptance, completionDate, message };
+	
+	virtual protected sql_bool where() {
+		if (user().id != Users.Administrator)
+			return staff.recordId == user().id && (deadline >= date.now() || deadline == date.Min) && !Sql.inVector(status.recordId, guid[] { StatusTracker.Ready, StatusTracker.Done });
+		return true;
+	}
+	
+}

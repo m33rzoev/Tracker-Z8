@@ -1,0 +1,23 @@
+import org.zenframework.z8.base.table.Table;
+import org.zenframework.z8.base.table.system.Users;
+import org.zenframework.z8.base.table.value.Link;
+
+[entry]	
+[generatable]
+[name "History tracker"]
+[displayName "История"]
+public class HistoryTracker extends Table {
+	public Tracker tracker;
+	/* Ссылка на таблицу Document по Foreign Key, атрибут [name] определяет имя поля documentId в БД */
+	[name "TrackerId"] public Link trackerId = tracker;
+
+	public StatusTracker status;
+	[name "StatusId"] public Link statusId = status;
+
+	public Users user;
+	[name "UserId"] public Link userId = user;
+
+	/* Атрибут [displayName] определяет имя, с которым поле createdAt отображается в UI */
+	[displayName "Дата"] createdAt;
+	[displayName "Исполнитель"] user.name;
+}

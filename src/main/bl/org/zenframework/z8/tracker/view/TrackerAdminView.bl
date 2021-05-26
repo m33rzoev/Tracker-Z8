@@ -1,0 +1,24 @@
+import org.zenframework.z8.base.form.Listbox;
+import org.zenframework.z8.tracker.model.HistoryTracker;
+import org.zenframework.z8.tracker.model.Tracker;
+
+[entry]
+[displayName "Панель админа"]
+public class TrackerAdminView extends Tracker {
+
+	[displayName "Назначить на"] staff.name;
+	
+	HistoryTracker historyTracker;
+
+	[displayName "История"]
+	private Listbox historyTrackerListbox;
+	historyTrackerListbox.query = historyTracker;
+	historyTrackerListbox.link = historyTracker.trackerId;
+	historyTrackerListbox.columns = { historyTracker.createdAt, historyTracker.status.name, historyTracker.user.name };
+	historyTrackerListbox.colSpan = 4;
+	historyTrackerListbox.flex = 1;
+	
+	names = { client, requestTopic.name, createdAt };
+	controls = { client, requestTopic.name, phone, staff.name, deadline, status.name, createdAt, dateOfAcceptance, completionDate, message, historyTrackerListbox };
+	columns = {  client, requestTopic.name, phone, staff.name, deadline, status.name, createdAt, dateOfAcceptance, completionDate, message };
+}

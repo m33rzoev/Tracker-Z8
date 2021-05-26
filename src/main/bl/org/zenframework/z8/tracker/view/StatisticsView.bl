@@ -1,0 +1,49 @@
+import org.zenframework.z8.base.table.system.Users;
+import org.zenframework.z8.base.table.value.CountExpression;
+import org.zenframework.z8.base.table.value.DecimalExpression;
+import org.zenframework.z8.tracker.model.StatusTracker;
+import org.zenframework.z8.tracker.model.Tracker;
+
+[entry]
+[presentation "table"]
+[displayName "Статистика"]
+public class StatisticsView extends Users {
+	
+	[displayName "Заявок назначено"]
+	public CountExpression колвНазнач = class {
+		virtual public int get() {
+			Tracker tracker;
+			return tracker.count(tracker.staffId == container.recordId.get());
+		}
+	};
+	
+	[displayName "Заявок закрыл"]
+	public CountExpression колвЗак = class {
+		virtual public int get() {
+			Tracker tracker;
+			return tracker.count(tracker.staffId == container.recordId.get() && tracker.statusId == StatusTracker.Ready);
+		}
+	};
+	
+	[displayName "Заявок не сделал"]
+	public CountExpression колвНезак = class {
+		virtual public int get() {
+			Tracker tracker;
+			return tracker.count(tracker.staffId == container.recordId.get() && tracker.statusId != StatusTracker.Ready);
+		}
+	};
+	
+	[displayName "% закрытых"]
+	public DecimalExpression процИсп = class {
+		virtual public decimal get() {
+			Tracker tracker;
+			if (container.колвНазнач.get() > 0) {
+				return (1.0 * container.колвЗак.get() / container.колвНазнач.get() * 100);
+			} else {
+				return 0.0;
+			}
+		}
+	};
+	
+	columns = { name, колвНазнач, колвЗак, колвНезак, процИсп };
+}

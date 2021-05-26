@@ -1,0 +1,21 @@
+import org.zenframework.z8.base.table.Sql;
+import org.zenframework.z8.tracker.model.StatusTracker;
+
+[entry]
+[displayName "Мои заявки"]
+public class MyTopics extends TrackerAdminView {
+	
+	status = class {
+		virtual protected sql_bool where() {
+			return Sql.inVector(recordId, guid[] { StatusTracker.New, StatusTracker.Ready, StatusTracker.Done });
+		}
+	};
+	
+	names = { requestTopic.name };
+	controls = { requestTopic.name, client, phone, status.name, createdAt, completionDate, message };
+	columns = { requestTopic.name, client, phone, status.name, createdAt, completionDate, message };
+	
+	virtual protected sql_bool where() {
+		return author.recordId == user().id && statusId == StatusTracker.Ready;
+	}
+}

@@ -1,0 +1,92 @@
+import org.zenframework.z8.base.table.Table;
+import org.zenframework.z8.base.table.system.Users;
+import org.zenframework.z8.base.table.value.DatetimeField;
+import org.zenframework.z8.base.table.value.Link;
+import org.zenframework.z8.base.table.value.StringField;
+import org.zenframework.z8.base.table.value.TextField;
+
+[entry]	
+[generatable]
+[name "tracker"]
+[displayName "Трекер"]
+public class Tracker extends Table {
+	
+	public RequestTopic requestTopic;
+	[name "Темы Заявок"] public Link requestTopicId = requestTopic;
+	
+	public StatusTracker status;
+	[name "Статус"] public Link statusId = status;
+	
+	public Users staff;
+	[name "Сотрудник"] public Link staffId = staff;
+	
+	[name "User"]
+	[displayName "ФИО"]
+	public StringField client;
+	
+	[name "Phone"]
+	[displayName "Телефон"]
+	public StringField phone;
+	phone.length = 25;
+	
+	[name "Date of acceptance"]
+	[displayName "Дата принятия"]
+	public DatetimeField dateOfAcceptance;
+	
+	[name "Completion date"]
+	[displayName "Дата завершения"]
+	public DatetimeField completionDate;
+	
+	[name "Deadline"]
+	[displayName "Срок сдачи"]
+	public DatetimeField deadline;
+	
+	[displayName "Дата создания"] createdAt;
+	
+	public Users author;
+	[name "Author"] public Link authorId = author;
+	
+	[name "Message"]
+	[displayName "Сообщение"]
+	public TextField message;
+	
+	message.colSpan = 4;
+	message.flex = 1;
+	
+	names = { requestTopic.name };
+	controls = { requestTopic.name, client, phone, status.name, createdAt, message };
+	columns = { requestTopic.name, client, phone, status.name, createdAt, message };
+	
+	virtual protected void afterCreate(guid recordId) {
+		super.afterCreate(recordId);
+		statusId = StatusTracker.New;
+		authorId = user().id;
+		update(recordId);
+	}
+	
+	virtual protected void afterUpdate(guid recordId) {
+		// Вызов метода из родительского класса
+		super.afterUpdate(recordId);
+
+		// Если не изменено значение ни поля statusId, ни userId, выйти из метода
+		if (statusId.isChanged() || staffId.isChanged()) {
+			HistoryTracker history;
+			history.trackerId = recordId;
+			history.statusId = statusId.get();
+			history.userId = staffId.get();
+			history.create();
+			
+			if (statusId.isChanged()) {
+				Tracker tracker;
+				if (statusId.get() == StatusTracker.Done) {
+					tracker.lock = 2;
+					tracker.dateOfAcceptance = date.now();
+					tracker.completionDate = date.now();
+				} else if (statusId.get() == StatusTracker.InProcessing) {
+					tracker.dateOfAcceptance = date.now();
+				}
+				tracker.update(recordId);
+			}
+		}
+	}
+}	
